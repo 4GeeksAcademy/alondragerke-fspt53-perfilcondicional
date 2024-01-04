@@ -39,26 +39,23 @@ function render(variables = {}) {
   if (variables.instagram)
     socialMedia += `<li><a href="https://instagram.com/${variables.instagram}"><i class="fab fa-instagram"></i></a></li>`;
 
-  const socialMediaPositionClass =
-    variables.socialMediaPosition === "left"
-      ? "position-left"
-      : "position-right";
-
-  // reset the website body with the new html output
-  document.querySelector("#widget_content").innerHTML = `<div class="widget">
-            ${cover}
-          <img src="${variables.avatarURL}" class="photo" />
-          <h1>${variables.name} ${variables.lastName}</h1>
-          <h2>${variables.role}</h2>
-          <h3>${
-            variables.city
-              ? `${variables.city}, ${variables.country}`
-              : variables.country
-          }</h3>
-          <ul class="${socialMediaPositionClass}">
-            ${socialMedia}
-          </ul>
-        </div>
+  const widgetContent = document.querySelector("#widget_content");
+  widgetContent.innerHTML = `<div class="widget">
+      ${cover}
+    <img src="${variables.avatarURL}" class="photo" />
+    <div class="content">
+      <h1>${variables.name} ${variables.lastName}</h1>
+      <h2>${variables.role}</h2>
+      <h3>${
+        variables.city
+          ? `${variables.city}, ${variables.country}`
+          : variables.country
+      }</h3>
+    </div>
+    <ul class="social-media ${variables.socialMediaPosition}">
+      ${socialMedia}
+    </ul>
+    </div>
     `;
 }
 
@@ -102,6 +99,13 @@ window.onload = function() {
           : this.value == "false"
           ? false
           : this.value;
+
+      if (attribute === "socialMediaPosition") {
+        // Handle social media position change separately
+        const widgetElement = document.querySelector(".widget");
+        widgetElement.classList.remove("position-left", "position-right");
+        widgetElement.classList.add(values[attribute]);
+      }
 
       render(Object.assign(window.variables, values)); // render again the card with new values
     });
